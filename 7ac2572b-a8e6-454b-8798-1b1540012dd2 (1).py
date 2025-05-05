@@ -83,7 +83,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import cross_val_score
 from sklearn.linear_model import LogisticRegressionCV
-from sklearn.ensemble import RandomForestClassifier
+
 
 import pandas as pd
 import matplotlib as mpl
@@ -1430,27 +1430,28 @@ pipe_final = Pipeline(
 param_grid = [
     {
         'models': [KNeighborsClassifier()],
-        'models__n_neighbors': range(1, 20), 
+        'models__n_neighbors': range(1, 30), 
         'preprocessor__num': [StandardScaler(), MinMaxScaler()]
     },
     {
         'models': [DecisionTreeClassifier(random_state=RANDOM_STATE)],
-        'models__max_depth': range(2, 11),
-        'models__max_features': range(2, 5),
+        'models__max_depth': range(2, 15), 
+        'models__max_features': ['auto', 'sqrt', 2, 3], 
         'preprocessor__num': [StandardScaler(), MinMaxScaler(), 'passthrough']
     },
     {
         'models': [SVC(random_state=RANDOM_STATE, probability=True)],
+        'models__C': [0.1, 1, 10, 100],  
+        'models__kernel': ['linear', 'rbf'],  
         'preprocessor__num': [StandardScaler(), MinMaxScaler(), 'passthrough']
     },
     {
         'models': [LogisticRegressionCV(random_state=RANDOM_STATE,
+                                         solver='liblinear',
+                                         penalty='l1')],
+        'models__Cs': [0.01, 0.1, 1, 10],  
         'preprocessor__num': [StandardScaler(), MinMaxScaler(), 'passthrough']
     },
-    {
-        'models': [RandomForestClassifier(random_state=RANDOM_STATE)], 
-        'preprocessor__num': [StandardScaler(), MinMaxScaler()]
-    }
 ]
 
 
