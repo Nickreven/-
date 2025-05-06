@@ -82,6 +82,8 @@ import phik
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import cross_val_score
+from sklearn.linear_model import LogisticRegressionCV
+from sklearn.ensemble import RandomForestClassifier
 
 import pandas as pd
 import matplotlib as mpl
@@ -1106,9 +1108,25 @@ display(phik_matrix['покупательская_активность'])
 # In[147]:
 
 
-plt.figure(figsize=(20, 20))
-
 sns.heatmap(market_data_2.phik_matrix(), annot=True, fmt='.2f')
+ 
+ sns.heatmap(
+     market_data_2.phik_matrix(),
+     annot=True,
+     fmt='.2f',
+     cmap='coolwarm',  
+     linewidths=.5, 
+     linecolor='black',
+     cbar_kws={"shrink": .8},
+ )
+ 
+ 
+ plt.title('Матрица корреляции', fontsize=24)
+ 
+ 
+ plt.xticks(fontsize=14)
+ plt.yticks(fontsize=14)
+ 
 
 plt.show()
 
@@ -1411,26 +1429,29 @@ pipe_final = Pipeline(
 param_grid = [
     {
         'models': [KNeighborsClassifier()],
-        'models__n_neighbors': range(1, 20),
+        'models__n_neighbors': range(1, 20), 
         'preprocessor__num': [StandardScaler(), MinMaxScaler()]
     },
     {
         'models': [DecisionTreeClassifier(random_state=RANDOM_STATE)],
-        'models__max_depth': range(2, 11),
-        'models__max_features': range(2, 5),
         'preprocessor__num': [StandardScaler(), MinMaxScaler(), 'passthrough']
     },
     {
         'models': [SVC(random_state=RANDOM_STATE, probability=True)],
+
         'preprocessor__num': [StandardScaler(), MinMaxScaler(), 'passthrough']
     },
     {
-        'models': [LogisticRegression(random_state=RANDOM_STATE,
-                                      solver='liblinear',
-                                      penalty='l1')],
-        'models__C': range(1, 5),
+        'models': [LogisticRegressionCV(random_state=RANDOM_STATE,
+                                         solver='liblinear',
+                                         penalty='l1')],
+        'models__Cs': [0.01, 0.1, 1, 10],  
         'preprocessor__num': [StandardScaler(), MinMaxScaler(), 'passthrough']
-    }
+    },
+     {
+         'models': [RandomForestClassifier(random_state=RANDOM_STATE)], 
+         'preprocessor__num': [StandardScaler(), MinMaxScaler()]
+     }
 ]
 
 
