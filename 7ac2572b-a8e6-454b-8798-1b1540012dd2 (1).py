@@ -1446,10 +1446,6 @@ param_grid = [
     {
         'models': [LogisticRegressionCV(random_state=RANDOM_STATE,
         'preprocessor__num': [StandardScaler(), MinMaxScaler(), 'passthrough']
-    },
-    {
-        'models': [RandomForestClassifier(random_state=RANDOM_STATE)], 
-        'preprocessor__num': [StandardScaler(), MinMaxScaler()]
     }
 ]
 
